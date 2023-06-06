@@ -4,27 +4,48 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    float _torqueAmount = 1f;
+    [SerializeField] float torqueAmount = 1f;
+    [SerializeField] float boostSpeed = 30f;
+    [SerializeField] float baseSpeed = 20f;
 
-    private Rigidbody2D _rbd2;
+    private Rigidbody2D rbd2;
+    private SurfaceEffector2D surfaceEffector2D;
 
     // Start is called before the first frame update
     void Start()
     {
-        _rbd2 = GetComponent<Rigidbody2D>();
+        rbd2 = GetComponent<Rigidbody2D>();
+        surfaceEffector2D = FindObjectOfType<SurfaceEffector2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        RotatePlayer();
+        RespondToBoost();
+    }
+
+    private void RotatePlayer()
+    {
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            _rbd2.AddTorque(_torqueAmount);
+            rbd2.AddTorque(torqueAmount);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            _rbd2.AddTorque(-_torqueAmount);
+            rbd2.AddTorque(-torqueAmount);
+        }
+    }
+
+    private void RespondToBoost()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            surfaceEffector2D.speed = boostSpeed;
+        }
+        else
+        {
+            surfaceEffector2D.speed = baseSpeed;
         }
     }
 }
